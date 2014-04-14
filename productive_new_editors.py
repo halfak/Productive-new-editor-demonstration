@@ -36,6 +36,8 @@ from mw.lib import reverts
 DAY_SECONDS = 60*60*24 # Number of seconds in a day.  Used a few time to convert
                        # days to seconds. 
 
+logger = logging.getLogger("productive_new_editor")
+
 def escape(string):
 	"Escapes a string for inclusion in a TSV file"
 	return string.replace("\t", "\\t").replace("\n", "\\n")
@@ -66,10 +68,11 @@ def main():
 		Timestamp(args['<start_date>']), 
 		Timestamp(args['<end_date>']),
 		int(args['-n']),
-		int(args['-t'])
+		int(args['-t']),
+		args["--debug"]
 	)
 
-def run(db, start_date, end_date, n, t):
+def run(db, start_date, end_date, n, t, debug):
 	
 	# Print some headers
 	print(
@@ -90,7 +93,7 @@ def run(db, start_date, end_date, n, t):
 		registered_before=end_date
 	)
 	for user_row in users:
-		
+		logger.debug("Processing {0}:".format(str(user_row['user_name'], "utf-8")))
 		# Convert user_registration to a useful type
 		user_registration = Timestamp(user_row['user_registration'])
 		
